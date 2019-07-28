@@ -6,13 +6,13 @@ Api de "lista de desejos" que associa clientes a produtos desejados.
 
 ## Recursos Utilizados
 
-.NET Framework 4.6 com ASP.NET WEB API;
-Domain-Driven Design (DDD);
+.NET Framework 4.6 com ASP.NET WEB API;<br>
+Domain-Driven Design (DDD);<br>
 Testes Unitarios;
 
 ## Endpoints
 
-Criar Usuarios, Produtos e Desejos;
-Listar (com paginação) Usuarios, Produtos e Desejos;
-Atualizar Desejos;
+Criar Usuarios, Produtos e Desejos;<br>
+Listar (com paginaÃ§Ã£o) Usuarios, Produtos e Desejos; <br>
+Atualizar Desejos;<br>
 Remover Desejos;
