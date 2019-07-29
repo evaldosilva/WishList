@@ -1,9 +1,9 @@
-﻿namespace WishListWebApi.Models
+﻿namespace WishListWebApi.ModelsDTO
 {
     /// <summary>
-    /// Classe modelo de Wish para apresentacao dos dados
+    /// Classe DTO para a exibicao dos dados do produto
     /// </summary>
-    public class WishModel
+    public class GetAllProductsDTO
     {
         public int id { get; set; }
         public string name { get; set; }

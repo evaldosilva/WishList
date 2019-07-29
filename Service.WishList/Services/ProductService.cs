@@ -4,6 +4,7 @@ using Domain.WishList.Interface;
 using Service.WishList.Validators;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Service.WishList.Services
 {
@@ -31,12 +32,17 @@ namespace Service.WishList.Services
         /// </summary>
         /// <param name="Name">Nome do produto</param>
         /// <returns>True se a operacao deu certo, False ao contrario</returns>
-        public bool CreateProduct(string name)
+        public async Task<bool> CreateProductAsync(string name)
         {
-            if (BasicValidator.isNameValido(name))
-                return _productRepository.Create(name);
-            else
-                return false;
+            Task<bool> CreateProduct = new Task<bool>(() =>
+            {
+                if (BasicValidator.isNameValido(name))
+                    return _productRepository.Create(name);
+                else
+                    return false;
+            });
+            CreateProduct.Start();
+            return await CreateProduct;
         }
 
         /// <summary>
@@ -44,20 +50,26 @@ namespace Service.WishList.Services
         /// </summary>
         /// <param name="paginationParameter">Filtros para uma exibicao paginada</param>
         /// <returns>Lista de Products filtrada pelos parametros de paginacao</returns>
-        public IList<Product> ListProducts(PaginationParameter paginationParameter)
+        public async Task<IList<Product>> ListProductsAsync(PaginationParameter paginationParameter)
         {
-            // Neste caso, obtem todos os produtos para fazer a paginação, mas poderia ser criada uma 
-            // nova função na intreface para refinar mais a lista passando filtros direto para a consulta
-            // na camada de persistencia, para melhorar a performance.
-            List<Product> products = new List<Product>(_productRepository.GetAll());
+            Task<IList<Product>> tListProducts = new Task<IList<Product>>(() =>
+            {
+                // Neste caso, obtem todos os produtos para fazer a paginação, mas poderia ser criada uma 
+                // nova função na intreface para refinar mais a lista passando filtros direto para a consulta
+                // na camada de persistencia, para melhorar a performance.
+                List<Product> products = new List<Product>(_productRepository.GetAll());
 
-            // Realiza a paginação da lista
-            List<Product> productsPage = products.
-                Skip((paginationParameter.numeroPagina - 1) * paginationParameter.numeroRegistrosPorPagina).
-                Take(paginationParameter.numeroRegistrosPorPagina)
-                .ToList();
+                // Realiza a paginação da lista
+                List<Product> productsPage = products.
+                    Skip((paginationParameter.numeroPagina - 1) * paginationParameter.numeroRegistrosPorPagina).
+                    Take(paginationParameter.numeroRegistrosPorPagina)
+                    .ToList();
 
-            return productsPage;
+
+                return productsPage;
+            });
+            tListProducts.Start();
+            return await tListProducts;
         }
     }
 }

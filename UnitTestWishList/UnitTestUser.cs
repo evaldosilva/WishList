@@ -14,10 +14,10 @@ namespace UnitTestWishList
             UserRepository _userRepository = new UserRepository();
             UserService userService = new UserService(_userRepository);
 
-            Assert.AreEqual(userService.CreateUser("Evaldo", "evaldo@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Rodrigo Carvalho", "rodrigo@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Marcel Grilo", "marcel@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Alexandre Faria", "alexandre@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Evaldo", "evaldo@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Rodrigo Carvalho", "rodrigo@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Marcel Grilo", "marcel@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Alexandre Faria", "alexandre@email.com").Result, true);
         }
 
         [TestMethod, Description("Obtem todos os usuarios, limitados a paginacao padrao")]
@@ -27,9 +27,9 @@ namespace UnitTestWishList
             UserService userService = new UserService(_userRepository);
             PaginationParameter paginationParameter = new PaginationParameter();
 
-            Assert.AreEqual(userService.CreateUser("Rodrigo Carvalho", "rodrigo@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Marcel Grilo", "marcel@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Alexandre Faria", "alexandre@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Rodrigo Carvalho", "rodrigo@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Marcel Grilo", "marcel@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Alexandre Faria", "alexandre@email.com").Result, true);
 
             Assert.IsNotNull(userService.ListUsers(paginationParameter));
         }
@@ -41,22 +41,22 @@ namespace UnitTestWishList
             UserService userService = new UserService(_userRepository);
             PaginationParameter paginationParameter = new PaginationParameter();
 
-            Assert.AreEqual(userService.CreateUser("Rodrigo Carvalho", "rodrigo@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Marcel Grilo", "marcel@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Alexandre Faria", "alexandre@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Evaldo", "evaldo@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Joao", "joao@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Greice", "greice@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Maria", "maria@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Kelly", "kelly@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Ana", "ana@email.com"), true);
-            Assert.AreEqual(userService.CreateUser("Paula", "paula@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Rodrigo Carvalho", "rodrigo@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Marcel Grilo", "marcel@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Alexandre Faria", "alexandre@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Evaldo", "evaldo@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Joao", "joao@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Greice", "greice@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Maria", "maria@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Kelly", "kelly@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Ana", "ana@email.com").Result, true);
+            Assert.AreEqual(userService.CreateUserAsync("Paula", "paula@email.com").Result, true);
 
             // Fim do limite default de paginacao, nao devem ser exibidos
-            Assert.AreEqual(userService.CreateUser("Nao Exibir", "nao@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Nao Exibir", "nao@email.com").Result, true);
 
             Assert.IsNotNull(userService.ListUsers(paginationParameter));
-            Assert.IsTrue(userService.ListUsers(paginationParameter).Count <= paginationParameter.numeroRegistrosPorPagina);
+            Assert.IsTrue(userService.ListUsers(paginationParameter).Result.Count <= paginationParameter.numeroRegistrosPorPagina);
         }
     }
 }

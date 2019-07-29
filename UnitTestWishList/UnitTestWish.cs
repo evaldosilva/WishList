@@ -14,12 +14,12 @@ namespace UnitTestWishList
             UserRepository _userRepository = new UserRepository();
             UserService userService = new UserService(_userRepository);
 
-            Assert.AreEqual(userService.CreateUser("Rodrigo Carvalho", "rodrigo@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Rodrigo Carvalho", "rodrigo@email.com").Result, true);
 
             WishRepository _wishRepository = new WishRepository();
             WishService wishService = new WishService(_wishRepository);
 
-            Assert.AreEqual(wishService.Create(1, 1), false);
+            Assert.AreEqual(wishService.CreateWishAsync(1, 1).Result, false);
         }
 
         [TestMethod]
@@ -28,12 +28,12 @@ namespace UnitTestWishList
             ProductRepository _productRepository = new ProductRepository();
             ProductService productService = new ProductService(_productRepository);
 
-            Assert.AreEqual(productService.CreateProduct("Batedeira"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Batedeira").Result, true);
 
             WishRepository _wishRepository = new WishRepository();
             WishService wishService = new WishService(_wishRepository);
 
-            Assert.AreEqual(wishService.Create(1, 1), false);
+            Assert.AreEqual(wishService.CreateWishAsync(1, 1).Result, false);
         }
 
         [TestMethod]
@@ -42,20 +42,20 @@ namespace UnitTestWishList
             ProductRepository _productRepository = new ProductRepository();
             ProductService productService = new ProductService(_productRepository);
 
-            Assert.AreEqual(productService.CreateProduct("Batedeira"), true);
-            Assert.AreEqual(productService.CreateProduct("Video Cassete"), true);
-            Assert.AreEqual(productService.CreateProduct("Toca Fitas"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Batedeira").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Video Cassete").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Toca Fitas").Result, true);
 
             UserRepository _userRepository = new UserRepository();
             UserService userService = new UserService(_userRepository);
 
-            Assert.AreEqual(userService.CreateUser("Rodrigo Carvalho", "rodrigo@email.com"), true);
+            Assert.AreEqual(userService.CreateUserAsync("Rodrigo Carvalho", "rodrigo@email.com").Result, true);
 
             WishRepository _wishRepository = new WishRepository();
             WishService wishService = new WishService(_wishRepository);
 
-            Assert.AreEqual(wishService.Create(1, 1), true);
-            Assert.AreEqual(wishService.Create(1, 3), true);
+            Assert.AreEqual(wishService.CreateWishAsync(1, 1).Result, true);
+            Assert.AreEqual(wishService.CreateWishAsync(1, 3).Result, true);
         }
 
         [TestMethod]
@@ -66,9 +66,9 @@ namespace UnitTestWishList
             WishRepository _wishRepository = new WishRepository();
             WishService wishService = new WishService(_wishRepository);
 
-            Assert.AreEqual(wishService.Remove(1, 1), true);
-            Assert.AreEqual(wishService.Remove(1, 2), false);
-            Assert.AreEqual(wishService.Remove(1, 3), true);
+            Assert.AreEqual(wishService.RemoveWishAsync(1, 1).Result, true);
+            Assert.AreEqual(wishService.RemoveWishAsync(1, 2).Result, false);
+            Assert.AreEqual(wishService.RemoveWishAsync(1, 3).Result, true);
         }
 
         [TestMethod, Description("Obtem todos os desejos, limitados a paginacao padrao")]
@@ -80,8 +80,8 @@ namespace UnitTestWishList
             WishService wishService = new WishService(_wishRepository);
             PaginationParameter paginationParameter = new PaginationParameter();
 
-            Assert.IsNotNull(wishService.ListWishes(paginationParameter, 1));
-            Assert.AreEqual(wishService.ListWishes(paginationParameter, 2).Count, 0);
+            Assert.IsNotNull(wishService.ListWishesAsync(paginationParameter, 1));
+            Assert.AreEqual(wishService.ListWishesAsync(paginationParameter, 2).Result.Count, 0);
         }
     }
 }

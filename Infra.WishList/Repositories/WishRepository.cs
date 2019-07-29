@@ -38,7 +38,7 @@ namespace Infra.Repository.WishList.Repositories
         }
 
         /// <summary>
-        /// Remove um Wish existente
+        /// RemoveWishAsync um Wish existente
         /// </summary>
         /// <param name="UserId">Id do Usuario</param>
         /// <param name="ProductId">Id do Produto</param>
@@ -73,7 +73,7 @@ namespace Infra.Repository.WishList.Repositories
         }
 
         /// <summary>
-        /// Remove todos os Wishes de um usuario
+        /// RemoveWishAsync todos os Wishes de um usuario
         /// </summary>
         /// <param name="UserId">Id do Usuario</param>
         /// <returns>True se a operacao deu certo, False ao contrario</returns>

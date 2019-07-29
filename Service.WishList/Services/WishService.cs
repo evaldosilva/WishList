@@ -3,6 +3,7 @@ using Domain.WishList.Entity;
 using Domain.WishList.Interface;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Service.WishList.Services
 {
@@ -31,30 +32,36 @@ namespace Service.WishList.Services
         /// <param name="UserId">Id do Usuario</param>
         /// <param name="ProductId">Id do Produto</param>
         /// <returns>True se a operacao deu certo, False ao contrario</returns>
-        public bool Create(int UserId, int ProductId)
+        public async Task<bool> CreateWishAsync(int UserId, int ProductId)
         {
-            return _wishListRepository.Create(UserId, ProductId);
+            Task<bool> tCreateWish = new Task<bool>(() => { return _wishListRepository.Create(UserId, ProductId); });
+            tCreateWish.Start();
+            return await tCreateWish;
         }
 
         /// <summary>
-        /// Remove todos os Wishes de um usuario
+        /// RemoveWishAsync todos os Wishes de um usuario
         /// </summary>
         /// <param name="UserId">Id do usuario</param>
         /// <returns>True se a operacao deu certo, False ao contrario</returns>
-        public bool RemoveAll(int UserId)
+        public async Task<bool> RemoveAllWishesAsync(int UserId)
         {
-            return _wishListRepository.RemoveAll(UserId);
+            Task<bool> tRemoveAllWish = new Task<bool>(() => { return _wishListRepository.RemoveAll(UserId); });
+            tRemoveAllWish.Start();
+            return await tRemoveAllWish;
         }
 
         /// <summary>
-        /// Remove um Wish
+        /// RemoveWishAsync um Wish
         /// </summary>
         /// <param name="UserId">Id do Usuario</param>
         /// <param name="ProductId">Id do Produto</param>
         /// <returns>True se a operacao deu certo, False ao contrario</returns>
-        public bool Remove(int UserId, int ProductId)
+        public async Task<bool> RemoveWishAsync(int UserId, int ProductId)
         {
-            return _wishListRepository.Remove(UserId, ProductId);
+            Task<bool> tRemove = new Task<bool>(() => { return _wishListRepository.Remove(UserId, ProductId); });
+            tRemove.Start();
+            return await tRemove;
         }
 
         /// <summary>
@@ -63,9 +70,11 @@ namespace Service.WishList.Services
         /// <param name="UserId">Id do Usuario</param>
         /// <param name="ProductId">Id do Produto</param>
         /// <returns>O desejo de um usuario sobre um produto</returns>
-        public Wish GetWish(int UserId, int ProductId)
+        public async Task<Wish> GetWishAsync(int UserId, int ProductId)
         {
-            return _wishListRepository.Get(UserId, ProductId);
+            Task<Wish> tWish = new Task<Wish>(() => { return _wishListRepository.Get(UserId, ProductId); });
+            tWish.Start();
+            return await tWish;
         }
 
         /// <summary>
@@ -74,20 +83,25 @@ namespace Service.WishList.Services
         /// <param name="paginationParameter">Filtros para uma exibicao paginada</param>
         /// <param name="UserId">Id do usuario</param>
         /// <returns>Lista de Users filtrada pelos parametros de paginacao</returns>
-        public IList<Wish> ListWishes(PaginationParameter paginationParameter, int UserId)
+        public async Task<IList<Wish>> ListWishesAsync(PaginationParameter paginationParameter, int UserId)
         {
-            // Neste caso, obtem todos os desejos para fazer a paginação, mas poderia ser criada uma 
-            // nova função na intreface para refinar mais a lista passando filtros direto para a consulta
-            // na camada de persistencia, para melhorar a performance.
-            List<Wish> wishes = new List<Wish>(_wishListRepository.GetAll(UserId));
+            Task<IList<Wish>> tListWish = new Task<IList<Wish>>(() =>
+            {
+                // Neste caso, obtem todos os desejos para fazer a paginação, mas poderia ser criada uma 
+                // nova função na intreface para refinar mais a lista passando filtros direto para a consulta
+                // na camada de persistencia, para melhorar a performance.
+                List<Wish> wishes = new List<Wish>(_wishListRepository.GetAll(UserId));
 
-            // Realiza a paginação da lista
-            List<Wish> wishesPage = wishes.
-                Skip((paginationParameter.numeroPagina - 1) * paginationParameter.numeroRegistrosPorPagina).
-                Take(paginationParameter.numeroRegistrosPorPagina)
-                .ToList();
+                // Realiza a paginação da lista
+                List<Wish> wishesPage = wishes.
+                    Skip((paginationParameter.numeroPagina - 1) * paginationParameter.numeroRegistrosPorPagina).
+                    Take(paginationParameter.numeroRegistrosPorPagina)
+                    .ToList();
 
-            return wishesPage;
+                return wishesPage;
+            });
+            tListWish.Start();
+            return await tListWish;
         }
     }
 }

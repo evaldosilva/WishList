@@ -6,8 +6,9 @@ using Service.WishList.Services;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using WishListWebApi.Models;
+using WishListWebApi.ModelsDTO;
 
 namespace WishListWebApi.Controllers
 {
@@ -18,12 +19,12 @@ namespace WishListWebApi.Controllers
 
         [HttpGet]
         [Route("wishes/{userId}")]
-        public IEnumerable<WishModel> GetAllWishes(int userId, [FromUri]int page_size, [FromUri]int page)
+        public async Task<IEnumerable<WishDTO>> GetAllWishes(int userId, [FromUri]int page_size, [FromUri]int page)
         {
-            List<WishModel> wishesModel = new List<WishModel>();
+            List<WishDTO> wishesModel = new List<WishDTO>();
             PaginationParameter paginationParameter = new PaginationParameter(page, page_size);
 
-            IList<Wish> wishes = _servico.ListWishes(paginationParameter, userId);
+            IList<Wish> wishes = await _servico.ListWishesAsync(paginationParameter, userId);
 
             // Faz a troca de dados da classe de dominio para a classe de exibicao
             if (wishes != null && wishes.Count > 0)
@@ -33,7 +34,7 @@ namespace WishListWebApi.Controllers
                     if (wish.User == null || wish.Product == null)
                         continue;
 
-                    WishModel wm = new WishModel();
+                    WishDTO wm = new WishDTO();
                     wm.id = userId;
                     wm.name = wish.Product.Name;
                     wishesModel.Add(wm);
@@ -44,63 +45,63 @@ namespace WishListWebApi.Controllers
 
         [HttpPost]
         [Route("wishes/{userId}")]
-        public HttpResponseMessage CreateWish(int userId, List<ProductModel> produtos)
+        public async Task<IHttpActionResult> CreateWish(int userId, List<ProductDTO> produtos)
         {
             bool criado = false;
 
             if (produtos != null)
-                foreach (ProductModel produtoModelo in produtos)
+                foreach (ProductDTO produtoModelo in produtos)
                 {
-                    criado = _servico.Create(userId, produtoModelo.idProduct);
+                    criado = await _servico.CreateWishAsync(userId, produtoModelo.idProduct);
                     if (!criado)
                         break;
                 }
 
             if (criado)
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                return Content(HttpStatusCode.Created, string.Empty);
             else
-                return new HttpResponseMessage(HttpStatusCode.NoContent);
+                return Content(HttpStatusCode.NoContent, string.Empty);
         }
 
         [HttpPut]
         [Route("wishes/{userId}")]
-        public HttpResponseMessage UpdateWish(int userId, List<ProductModel> produtos)
+        public async Task<IHttpActionResult> UpdateWish(int userId, List<ProductDTO> produtos)
         {
             bool atualizado = false;
 
             if (produtos != null)
             {
-                _servico.RemoveAll(userId);
+                bool allRemoved = await _servico.RemoveAllWishesAsync(userId);
 
-                foreach (ProductModel produtoModelo in produtos)
+                foreach (ProductDTO produtoModelo in produtos)
                 {
-                    atualizado = _servico.Create(userId, produtoModelo.idProduct);
+                    atualizado = await _servico.CreateWishAsync(userId, produtoModelo.idProduct);
                     if (!atualizado)
                         break;
                 }
             }
 
             if (atualizado)
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                return Content(HttpStatusCode.OK, string.Empty);
             else
-                return new HttpResponseMessage(HttpStatusCode.NoContent);
+                return Content(HttpStatusCode.NoContent, string.Empty);
         }
 
         [HttpDelete]
         [Route("{userId}/{productId}")]
-        public HttpResponseMessage DeleteWish(int userId, int productId)
+        public async Task<IHttpActionResult> DeleteWish(int userId, int productId)
         {
-            Wish wishExiste = _servico.GetWish(userId, productId);
+            Wish wishExiste = await _servico.GetWishAsync(userId, productId);
 
             if (wishExiste == null)
-                return new HttpResponseMessage(HttpStatusCode.NotFound);
+                return Content(HttpStatusCode.NotFound, string.Empty);
             else
             {
-                bool removido = _servico.Remove(userId, productId);
+                bool removido = await _servico.RemoveWishAsync(userId, productId);
                 if (removido)
-                    return new HttpResponseMessage(HttpStatusCode.OK);
+                    return Content(HttpStatusCode.OK, string.Empty);
                 else
-                    return new HttpResponseMessage(HttpStatusCode.NoContent);
+                    return Content(HttpStatusCode.NoContent, string.Empty);
             }
         }
     }

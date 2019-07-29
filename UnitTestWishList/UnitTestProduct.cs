@@ -14,9 +14,9 @@ namespace UnitTestWishList
             ProductRepository _productRepository = new ProductRepository();
             ProductService productService = new ProductService(_productRepository);
 
-            Assert.AreEqual(productService.CreateProduct("Batedeira"), true);
-            Assert.AreEqual(productService.CreateProduct("Video Cassete"), true);
-            Assert.AreEqual(productService.CreateProduct("Toca Fitas"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Batedeira").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Video Cassete").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Toca Fitas").Result, true);
         }
 
         [TestMethod, Description("Obtem todos os produtos, limitados a paginacao padrao")]
@@ -26,11 +26,11 @@ namespace UnitTestWishList
             ProductService productService = new ProductService(_productRepository);
             PaginationParameter paginationParameter = new PaginationParameter();
 
-            Assert.AreEqual(productService.CreateProduct("Batedeira"), true);
-            Assert.AreEqual(productService.CreateProduct("Video Cassete"), true);
-            Assert.AreEqual(productService.CreateProduct("Toca Fitas"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Batedeira").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Video Cassete").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Toca Fitas").Result, true);
 
-            Assert.IsNotNull(productService.ListProducts(paginationParameter));
+            Assert.IsNotNull(productService.ListProductsAsync(paginationParameter));
         }
 
         [TestMethod, Description("Obtem produtos limitados pela paginacao")]
@@ -40,22 +40,22 @@ namespace UnitTestWishList
             ProductService productService = new ProductService(_productRepository);
             PaginationParameter paginationParameter = new PaginationParameter();
 
-            Assert.AreEqual(productService.CreateProduct("Batedeira"), true);
-            Assert.AreEqual(productService.CreateProduct("Video Cassete"), true);
-            Assert.AreEqual(productService.CreateProduct("Toca Fitas"), true);
-            Assert.AreEqual(productService.CreateProduct("Microondas"), true);
-            Assert.AreEqual(productService.CreateProduct("TV"), true);
-            Assert.AreEqual(productService.CreateProduct("Computador"), true);
-            Assert.AreEqual(productService.CreateProduct("Notebook"), true);
-            Assert.AreEqual(productService.CreateProduct("Fritadeira"), true);
-            Assert.AreEqual(productService.CreateProduct("Celular"), true);
-            Assert.AreEqual(productService.CreateProduct("Impressora"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Batedeira").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Video Cassete").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Toca Fitas").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Microondas").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("TV").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Computador").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Notebook").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Fritadeira").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Celular").Result, true);
+            Assert.AreEqual(productService.CreateProductAsync("Impressora").Result, true);
 
             // Fim do limite default de paginacao, nao devem ser exibidos
-            Assert.AreEqual(productService.CreateProduct("Nao exibir"), true);
+            Assert.AreEqual(productService.CreateProductAsync("Nao exibir").Result, true);
 
-            Assert.IsNotNull(productService.ListProducts(paginationParameter));
-            Assert.IsTrue(productService.ListProducts(paginationParameter).Count <= paginationParameter.numeroRegistrosPorPagina);
+            Assert.IsNotNull(productService.ListProductsAsync(paginationParameter));
+            Assert.IsTrue(productService.ListProductsAsync(paginationParameter).Result.Count <= paginationParameter.numeroRegistrosPorPagina);
         }
     }
 }

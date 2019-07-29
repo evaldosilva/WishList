@@ -5,9 +5,9 @@ using Infra.Repository.WishList.Repositories;
 using Service.WishList.Services;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using WishListWebApi.Models;
+using WishListWebApi.ModelsDTO;
 
 namespace WishListWebApi.Controllers
 {
@@ -17,33 +17,33 @@ namespace WishListWebApi.Controllers
         static readonly UserService _servico = new UserService(_repositorio);
 
         [HttpPost]
-        public HttpResponseMessage PostUser(User user)
+        public async Task<IHttpActionResult> PostUser(User user)
         {
-            bool criado = _servico.CreateUser(user.Name, user.Email);
+            bool criado = await _servico.CreateUserAsync(user.Name, user.Email);
             if (criado)
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                return Content(HttpStatusCode.Created, string.Empty);
             else
-                return new HttpResponseMessage(HttpStatusCode.NoContent);
+                return Content(HttpStatusCode.NoContent, string.Empty);
         }
 
         [HttpGet]
-        public IEnumerable<GetAllUsersViewModel> GetAllUsers([FromUri]int page_size, [FromUri]int page)
+        public async Task<IEnumerable<GetAllUsersDTO>> GetAllUsers([FromUri]int page_size, [FromUri]int page)
         {
             PaginationParameter paginationParameter = new PaginationParameter(page, page_size);
-            IList<User> users = _servico.ListUsers(paginationParameter);
-            List<GetAllUsersViewModel> listGetAllUsersViewModel = new List<GetAllUsersViewModel>();
+            IList<User> users = await _servico.ListUsers(paginationParameter);
+            List<GetAllUsersDTO> listGetAllUsersDTO = new List<GetAllUsersDTO>();
 
             // Faz a troca de dados da classe de dominio para a classe de exibicao
             if (users != null && users.Count > 0)
                 foreach (User user in users)
                 {
-                    GetAllUsersViewModel userModel = new GetAllUsersViewModel();
+                    GetAllUsersDTO userModel = new GetAllUsersDTO();
                     userModel.id = user.Id;
                     userModel.name = user.Name;
                     userModel.email = user.Email;
-                    listGetAllUsersViewModel.Add(userModel);
+                    listGetAllUsersDTO.Add(userModel);
                 }
-            return listGetAllUsersViewModel;
+            return listGetAllUsersDTO;
         }
     }
 }

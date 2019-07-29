@@ -5,9 +5,9 @@ using Infra.Repository.WishList.Repositories;
 using Service.WishList.Services;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
-using WishListWebApi.Models;
+using WishListWebApi.ModelsDTO;
 
 namespace WishListWebApi.Controllers
 {
@@ -17,32 +17,32 @@ namespace WishListWebApi.Controllers
         static readonly ProductService _servico = new ProductService(_repositorio);
 
         [HttpPost]
-        public HttpResponseMessage PostProduct(Product product)
+        public async Task<IHttpActionResult> PostProduct(Product product)
         {
-            bool criado = _servico.CreateProduct(product.Name);
+            bool criado = await _servico.CreateProductAsync(product.Name);
             if (criado)
-                return new HttpResponseMessage(HttpStatusCode.Created);
+                return Content(HttpStatusCode.Created, string.Empty);
             else
-                return new HttpResponseMessage(HttpStatusCode.NoContent);
+                return Content(HttpStatusCode.NoContent, string.Empty);
         }
 
         [HttpGet]
-        public IEnumerable<GetAllProductsViewModel> GetAllProducts([FromUri]int page_size, [FromUri]int page)
+        public async Task<IEnumerable<GetAllProductsDTO>> GetAllProducts([FromUri]int page_size, [FromUri]int page)
         {
             PaginationParameter paginationParameter = new PaginationParameter(page, page_size);
-            IList<Product> produtos = _servico.ListProducts(paginationParameter);
-            List<GetAllProductsViewModel> listGetAllProductsViewModel = new List<GetAllProductsViewModel>();
+            IList<Product> produtos = await _servico.ListProductsAsync(paginationParameter);
+            List<GetAllProductsDTO> listGetAllProductsDTO = new List<GetAllProductsDTO>();
 
             // Faz a troca de dados da classe de dominio para a classe de exibicao
             if (produtos != null && produtos.Count > 0)
                 foreach (Product produto in produtos)
                 {
-                    GetAllProductsViewModel produtoModel = new GetAllProductsViewModel();
+                    GetAllProductsDTO produtoModel = new GetAllProductsDTO();
                     produtoModel.id = produto.Id;
                     produtoModel.name = produto.Name;
-                    listGetAllProductsViewModel.Add(produtoModel);
+                    listGetAllProductsDTO.Add(produtoModel);
                 }
-            return listGetAllProductsViewModel;
+            return listGetAllProductsDTO;
         }
     }
 }
