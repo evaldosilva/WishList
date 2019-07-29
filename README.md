@@ -26,4 +26,4 @@ Erro de Servidor no Aplicativo '/'. <br>
 Não foi possível localizar uma parte do caminho 'C:\caminho\WishList-master\WishListWebApi\bin\roslyn\csc.exe'.
 
 ### Solução:
-Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix
+`Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform.BinFix`
